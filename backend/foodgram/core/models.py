@@ -55,3 +55,11 @@ class Subscription(models.Model):
     subscribed_to = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='subscribed',
         verbose_name='Подписчик')
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        ordering = ('id',)
+
+    def __str__(self):
+        return self.user.username + ' > ' + self.subscribed_to.username
