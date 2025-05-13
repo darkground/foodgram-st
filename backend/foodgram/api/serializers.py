@@ -23,3 +23,15 @@ class UserSerializer(serializers.ModelSerializer):
             'is_subscribed',
             'avatar'
         ]
+
+
+class UserRegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'email',
+            'username',
+            'first_name',
+            'last_name'
+        ]

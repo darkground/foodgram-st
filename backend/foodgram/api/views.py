@@ -8,7 +8,7 @@ from rest_framework import permissions
 from rest_framework import mixins
 
 from core.models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserRegisterSerializer
 
 # Create your views here.
 
@@ -26,3 +26,8 @@ class UserViewSet(
     def me(self, request):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return UserRegisterSerializer
+        return UserSerializer
