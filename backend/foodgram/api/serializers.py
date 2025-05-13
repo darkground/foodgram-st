@@ -7,9 +7,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         user = getattr(self.context.get('request'), 'user', None)
-        sub = Subscription.objects.filter(
-            user__exact=user, subscribed_to__exact=obj)
-        return True if sub else False
+        if user and not user.is_anonymous:
+            return Subscription.objects.filter(
+                user__exact=user, subscribed_to__exact=obj).exists()
+        return False
 
     class Meta:
         model = User
