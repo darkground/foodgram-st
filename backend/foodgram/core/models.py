@@ -34,10 +34,10 @@ class User(AbstractUser):
         verbose_name='Фамилия',
         max_length=150
     )
-    avatar = models.URLField(
+    avatar = models.ImageField(
         verbose_name='Аватар',
-        blank=True,
-        null=True
+        upload_to='users',
+        blank=True
     )
 
     class Meta:
@@ -105,10 +105,9 @@ class Recipe(models.Model):
         verbose_name='Название',
         max_length=256
     )
-    image = models.URLField(
+    image = models.ImageField(
         verbose_name='Картинка',
-        blank=True,
-        null=True
+        upload_to='recipes'
     )
     text = models.TextField(
         verbose_name='Описание'
