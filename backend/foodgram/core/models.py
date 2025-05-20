@@ -117,6 +117,11 @@ class Recipe(models.Model):
     text = models.TextField(
         verbose_name='Описание'
     )
+    image = models.URLField(
+        verbose_name='Картинка',
+        blank=True,
+        null=True
+    )
     cooking_time = models.IntegerField(
         verbose_name='Описание',
         validators=[
