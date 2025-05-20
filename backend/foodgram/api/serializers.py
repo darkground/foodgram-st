@@ -9,10 +9,9 @@ class UserAccountSerializer(UserSerializer):
 
     def get_is_subscribed(self, obj):
         user = getattr(self.context.get('request'), 'user')
-        if user and user.is_authenticated:
+        if user:
             return (
-                user.is_authenticated
-                and
+                user.is_authenticated and
                 Subscription.objects.filter(user__exact=user, subscribed_to__exact=obj).exists()
             )
         return False
