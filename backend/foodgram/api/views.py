@@ -29,11 +29,6 @@ class UserAccountViewSet(UserViewSet):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
-    def get_serializer_class(self):
-        if self.action == 'create':
-            return UserRegisterSerializer
-        return UserAccountSerializer
-
 
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()

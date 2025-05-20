@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_simplejwt',
+    "rest_framework.authtoken",
     'djoser',
     'api',
     'core'
@@ -132,28 +132,30 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SILENCED_SYSTEM_CHECKS = ['rest_framework.W001']
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': None,
     'PAGE_SIZE': 10,
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-    ],
 
-    # 'DEFAULT_AUTHENTICATION_CLASSES': [
-    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
-    # ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
 }
 
 DJOSER = {
-    "SERIALIZERS": {
-        "user": "api.serializers.UserAccountSerializer",
-        "user_create": "api.serializers.UserRegisterSerializer",
-        "current_user": "api.serializers.UserAccountSerializer",
+    'SERIALIZERS': {
+        'user': 'api.serializers.UserAccountSerializer',
+        'user_create': 'api.serializers.UserRegisterSerializer',
+        'current_user': 'api.serializers.UserAccountSerializer',
     },
-}
+    'PERMISSIONS': {
+        'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
+        'user_list': ['rest_framework.permissions.AllowAny'],
+    },
 
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-#     'AUTH_HEADER_TYPES': ('Bearer',),
-# }
+    'HIDE_USERS': False,
+    'LOGIN_FIELD': 'email',
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': False,
+}
 
 AUTH_USER_MODEL = 'core.User'
