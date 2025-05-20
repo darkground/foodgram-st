@@ -23,7 +23,7 @@ class User(AbstractUser):
             ),
         ],
         error_messages={
-            'unique': "Пользователь с таким именем уже существует.",
+            'unique': 'Пользователь с таким именем уже существует.',
         },
     )
     first_name = models.CharField(
@@ -60,7 +60,7 @@ class Subscription(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "subscribed_to"], name="uq_Subscription"
+                fields=['user', 'subscribed_to'], name='uq_Subscription'
             )
         ]
 
@@ -98,8 +98,8 @@ class Recipe(models.Model):
     )
     ingredients = models.ManyToManyField(
         Ingredient,
-        through="IngredientInRecipe",
-        verbose_name="Ингредиенты"
+        through='IngredientInRecipe',
+        verbose_name='Ингредиенты'
     )
     name = models.CharField(
         verbose_name='Название',
@@ -118,7 +118,7 @@ class Recipe(models.Model):
         validators=[
             MinValueValidator(
                 limit_value=1,
-                message="Время приготовления должно быть больше или равно одной минуте"
+                message='Время приготовления должно быть больше или равно одной минуте'
             )
         ]
     )
@@ -141,7 +141,7 @@ class IngredientInRecipe(models.Model):
         verbose_name='Ингридиент')
     amount = models.IntegerField(
         validators=[MinValueValidator(1)],
-        verbose_name="Количество",
+        verbose_name='Количество',
     )
 
     class Meta:
@@ -164,7 +164,7 @@ class Favorite(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "recipe"], name="uq_Favorite"
+                fields=['user', 'recipe'], name='uq_Favorite'
             )
         ]
 
@@ -187,7 +187,7 @@ class ShoppingCart(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "recipe"], name="uq_Shopcart"
+                fields=['user', 'recipe'], name='uq_Shopcart'
             )
         ]
 
