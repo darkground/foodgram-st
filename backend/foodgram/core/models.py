@@ -4,6 +4,9 @@ from django.core.validators import RegexValidator, MinValueValidator
 
 
 class User(AbstractUser):
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
+
     email = models.EmailField(
         verbose_name='Адрес электронной почты',
         max_length=254,
@@ -15,7 +18,7 @@ class User(AbstractUser):
         unique=True,
         validators=[
             RegexValidator(
-                regex=r'[\w.@+-]+',
+                regex=r'^[\w.@+-]+',
                 message='Юзернейм пользователя может содержать только буквы, а также следующие символы: ./@/+/-'
             ),
         ],
@@ -25,13 +28,11 @@ class User(AbstractUser):
     )
     first_name = models.CharField(
         verbose_name='Имя',
-        max_length=150,
-        blank=True
+        max_length=150
     )
     last_name = models.CharField(
         verbose_name='Фамилия',
-        max_length=150,
-        blank=True
+        max_length=150
     )
     avatar = models.URLField(
         verbose_name='Аватар',
@@ -93,7 +94,13 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='recipes',
-        verbose_name='Пользователь')
+        verbose_name='Пользователь'
+    )
+    ingredients = models.ManyToManyField(
+        Ingredient,
+        through="IngredientInRecipe",
+        verbose_name="Ингредиенты"
+    )
     name = models.CharField(
         verbose_name='Название',
         max_length=256
@@ -107,10 +114,10 @@ class Recipe(models.Model):
         verbose_name='Описание'
     )
     cooking_time = models.IntegerField(
-        verbose_name='Описание',
+        verbose_name='Время приготовления',
         validators=[
             MinValueValidator(
-                limit_value=0,
+                limit_value=1,
                 message="Время приготовления должно быть больше или равно одной минуте"
             )
         ]
@@ -127,10 +134,10 @@ class Recipe(models.Model):
 
 class IngredientInRecipe(models.Model):
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name='ingredients',
+        Recipe, on_delete=models.CASCADE, related_name='ingredient_amounts',
         verbose_name='Рецепт')
     ingredient = models.ForeignKey(
-        Ingredient, on_delete=models.CASCADE, related_name='recipes',
+        Ingredient, on_delete=models.CASCADE, related_name='ingredient_amounts',
         verbose_name='Ингридиент')
     amount = models.IntegerField(
         validators=[MinValueValidator(1)],
