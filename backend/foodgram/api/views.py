@@ -3,13 +3,13 @@ from djoser.views import UserViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import pagination, permissions
+from rest_framework import pagination, permissions, status
 
 from core.models import Recipe, User
 from .serializers import (
+    AvatarUploadSerializer,
     RecipeSerializer,
-    UserAccountSerializer,
-    UserRegisterSerializer
+    UserAccountSerializer
 )
 
 # Create your views here.
@@ -27,6 +27,23 @@ class UserAccountViewSet(UserViewSet):
     def me(self, request):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
+
+    @action(
+            methods=['put', 'delete'], detail=True,
+            permission_classes=[permissions.IsAuthenticated])
+    def avatar(self, request, id):
+        if request.method == 'PUT':
+            serializer = AvatarUploadSerializer(request.user, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        if request.user.avatar:
+            request.user.avatar.delete()
+            request.user.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class RecipeViewSet(ModelViewSet):
