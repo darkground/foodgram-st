@@ -2,11 +2,15 @@ from djoser.views import UserViewSet
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import pagination
-from rest_framework import permissions
+from rest_framework.viewsets import ModelViewSet
+from rest_framework import pagination, permissions
 
-from core.models import User
-from .serializers import UserAccountSerializer, UserRegisterSerializer
+from core.models import Recipe, User
+from .serializers import (
+    RecipeSerializer,
+    UserAccountSerializer,
+    UserRegisterSerializer
+)
 
 # Create your views here.
 
@@ -29,3 +33,16 @@ class UserAccountViewSet(UserViewSet):
         if self.action == 'create':
             return UserRegisterSerializer
         return UserAccountSerializer
+
+
+class RecipeViewSet(ModelViewSet):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer # TODO
+
+    # TODO change to auth or read only after djoser
+    permission_classes = [permissions.AllowAny]
+    pagination_class = pagination.LimitOffsetPagination
+
+    @action(methods=['get'], detail=False)
+    def get_link(self, request):
+        return Response("https://foodgram.example.org/s/3d0") # TODO

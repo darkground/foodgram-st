@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import Subscription, User
+from core.models import Recipe, Subscription, User
 
 
 class UserAccountSerializer(serializers.ModelSerializer):
@@ -38,4 +38,29 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             'username',
             'first_name',
             'last_name'
+        ]
+
+
+class RecipeSerializer(serializers.ModelSerializer):
+    is_favorited = serializers.SerializerMethodField('get_is_favorited')
+    is_in_shopping_cart = serializers.SerializerMethodField('get_is_in_shopping_cart')
+
+    def get_is_favorited(self, obj):
+        return False # TODO
+
+    def get_is_in_shopping_cart(self, obj):
+        return False # TODO
+
+    class Meta:
+        model = Recipe
+        fields = [
+            'id',
+            'author',
+            'ingredients',
+            'is_favorited',
+            'is_in_shopping_cart',
+            'name',
+            'image',
+            'text',
+            'cooking_time'
         ]
