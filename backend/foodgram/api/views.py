@@ -60,7 +60,7 @@ class RecipeViewSet(ModelViewSet):
 
     @action(methods=['get'], detail=False)
     def get_link(self, request):
-        return Response("https://foodgram.example.org/s/3d0") # TODO
+        return Response('https://foodgram.example.org/s/3d0') # TODO
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):

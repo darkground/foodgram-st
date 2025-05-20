@@ -42,8 +42,7 @@ class UserRegisterSerializer(UserCreateSerializer):
             'last_name',
             'password'
         ]
-        extra_kwargs = {"password": {"write_only": True}}
-
+        extra_kwargs = {'password': {'write_only': True}}
 
 
 class AvatarUploadSerializer(serializers.ModelSerializer):
