@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MinValueValidator
 
 
 class User(AbstractUser):
@@ -69,3 +69,89 @@ class Subscription(models.Model):
 
     def __str__(self):
         return self.user.username + ' > ' + self.subscribed_to.username
+
+
+class Ingredient(models.Model):
+    name = models.CharField(
+        verbose_name='Название',
+        max_length=128
+    )
+    measurement_unit = models.CharField(
+        verbose_name='Единица измерения',
+        max_length=64
+    )
+
+    class Meta:
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
+        ordering = ('id',)
+
+    def __str__(self):
+        return self.name
+
+
+class Recipe(models.Model):
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='recipes',
+        verbose_name='Пользователь')
+    # IS_FAVORITED method field
+    # IS_IN_SHOPPING_CART method field
+    username = models.CharField(
+        verbose_name='Юзернейм пользователя',
+        max_length=150,
+        unique=True,
+        validators=[
+            RegexValidator(
+                regex=r'[\w.@+-]+',
+                message='Юзернейм пользователя может содержать только буквы, а также следующие символы: ./@/+/-'
+            ),
+        ],
+        error_messages={
+            'unique': "Пользователь с таким именем уже существует.",
+        },
+    )
+    name = models.CharField(
+        verbose_name='Название',
+        max_length=256
+    )
+    text = models.TextField(
+        verbose_name='Описание'
+    )
+    cooking_time = models.IntegerField(
+        verbose_name='Описание',
+        validators=[
+            MinValueValidator(
+                limit_value=0,
+                message="Время приготовления должно быть больше или равно одной минуте"
+            )
+        ]
+    )
+
+    class Meta:
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
+        ordering = ('id',)
+
+    def __str__(self):
+        return self.username
+
+
+class IngredientInRecipe(models.Model):
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE, related_name='ingredients',
+        verbose_name='Рецепт')
+    ingredient = models.ForeignKey(
+        Ingredient, on_delete=models.CASCADE, related_name='recipes',
+        verbose_name='Ингридиент')
+    amount = models.IntegerField(
+        validators=[MinValueValidator(1)],
+        verbose_name="Количество",
+    )
+
+    class Meta:
+        verbose_name = 'Ингредиент рецепта'
+        verbose_name_plural = 'Ингредиенты рецептов'
+        ordering = ('id',)
+
+    def __str__(self):
+        return self.recipe.name + ' - ' + self.ingredient.name
