@@ -240,3 +240,21 @@ class UserWithRecipeSerializer(UserAccountSerializer):
             recipes = recipes[:int(recipes_limit)]
 
         return RecipeShortSerializer(recipes, context={"request": request}, many=True).data
+
+
+class FavoriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorite
+        fields = [
+            'user',
+            'recipe'
+        ]
+
+
+class ShoppingCartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorite
+        fields = [
+            'user',
+            'recipe'
+        ]
