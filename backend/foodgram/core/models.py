@@ -151,3 +151,49 @@ class IngredientInRecipe(models.Model):
 
     def __str__(self):
         return self.recipe.name + ' - ' + self.ingredient.name
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='favorites',
+        verbose_name='Пользователь')
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE,
+        verbose_name='Рецепт')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "subscribed_to"], name="uq_Favorite"
+            )
+        ]
+
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
+        ordering = ('id',)
+
+    def __str__(self):
+        return self.user.username + ' > ' + self.recipe.name
+
+
+class ShoppingCart(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='shopping_cart',
+        verbose_name='Пользователь')
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE,
+        verbose_name='Подписчик')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "subscribed_to"], name="uq_Shopcart"
+            )
+        ]
+
+        verbose_name = 'Корзина'
+        verbose_name_plural = 'Корзина'
+        ordering = ('id',)
+
+    def __str__(self):
+        return self.user.username + ' > ' + self.recipe.name
