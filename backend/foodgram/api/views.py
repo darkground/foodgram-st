@@ -18,8 +18,7 @@ class UserAccountViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = UserAccountSerializer
 
-    # TODO change to auth or read only after djoser
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = pagination.LimitOffsetPagination
 
     @action(
@@ -32,10 +31,9 @@ class UserAccountViewSet(UserViewSet):
 
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer # TODO
+    serializer_class = RecipeSerializer
 
-    # TODO change to auth or read only after djoser
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = pagination.LimitOffsetPagination
 
     @action(methods=['get'], detail=False)
