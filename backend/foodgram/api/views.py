@@ -2,12 +2,17 @@ from djoser.views import UserViewSet
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework import pagination, permissions, status
 
-from core.models import Recipe, User
+from django_filters.rest_framework import DjangoFilterBackend
+
+from core.models import Ingredient, Recipe, User
+
+from .filters import IngredientFilter
 from .serializers import (
     AvatarUploadSerializer,
+    IngredientSerializer,
     RecipeSerializer,
     UserAccountSerializer
 )
@@ -56,3 +61,11 @@ class RecipeViewSet(ModelViewSet):
     @action(methods=['get'], detail=False)
     def get_link(self, request):
         return Response("https://foodgram.example.org/s/3d0") # TODO
+
+
+class IngredientViewSet(ReadOnlyModelViewSet):
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer
+    permission_classes = (permissions.AllowAny,)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = IngredientFilter
