@@ -57,6 +57,12 @@ class Subscription(models.Model):
         verbose_name='Подписчик')
 
     class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "subscribed_to"], name="uq_Subscription"
+            )
+        ]
+
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
         ordering = ('id',)
