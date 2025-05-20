@@ -148,7 +148,18 @@ class UserWithRecipeSerializer(UserAccountSerializer):
     recipes_count = serializers.ReadOnlyField(source='recipes.count')
 
     class Meta:
-        fields = UserAccountSerializer.Meta.fields
+        model = User
+        fields = [
+            'id',
+            'email',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed',
+            'avatar',
+            'recipes',
+            'recipes_count'
+        ]
 
     def get_recipes(self, obj):
         request = self.context.get('request')

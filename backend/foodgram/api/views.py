@@ -7,7 +7,7 @@ from rest_framework import pagination, permissions, status
 
 from django_filters.rest_framework import DjangoFilterBackend
 
-from core.models import Ingredient, Recipe, User
+from core.models import Ingredient, Recipe, Subscription, User
 
 from .filters import IngredientFilter
 from .serializers import (
@@ -61,6 +61,35 @@ class UserAccountViewSet(UserViewSet):
         serializer = UserWithRecipeSerializer(pages, many=True, context={'request': request})
 
         return self.get_paginated_response(serializer.data)
+
+    @action(
+        detail=True,
+        methods=['post', 'delete'],
+        permission_classes=[permissions.IsAuthenticated]
+    )
+    def subscribe(self, request, id):
+        subscriber = request.user
+        user = self.get_object()
+        sub = Subscription.objects.filter(user=subscriber, subscribed_to=user)
+
+        if request.method == 'POST':
+            if subscriber == user or sub.exists():
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            Subscription.objects.create(user=subscriber, subscribed_to=user)
+
+            serializer = UserWithRecipeSerializer(user, context={
+                'request': request,
+                'recipes_limit': request.query_params.get('recipes_limit')
+            })
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        if not sub.exists():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        sub.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RecipeViewSet(ModelViewSet):
