@@ -1,28 +1,26 @@
-from django.shortcuts import render
+from djoser.views import UserViewSet
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import viewsets
 from rest_framework import pagination
 from rest_framework import permissions
-from rest_framework import mixins
 
 from core.models import User
-from .serializers import UserSerializer, UserRegisterSerializer
+from .serializers import UserAccountSerializer, UserRegisterSerializer
 
 # Create your views here.
 
-class UserViewSet(
-        mixins.CreateModelMixin,
-        mixins.ListModelMixin,
-        mixins.RetrieveModelMixin,
-        viewsets.GenericViewSet):
+class UserAccountViewSet(UserViewSet):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
-    pagination_class = pagination.LimitOffsetPagination
-    permission_classes = [permissions.AllowAny]
+    serializer_class = UserAccountSerializer
 
-    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    # TODO change to auth or read only after djoser
+    permission_classes = [permissions.AllowAny]
+    pagination_class = pagination.LimitOffsetPagination
+
+    @action(
+            methods=['get'], detail=False,
+            permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
@@ -30,4 +28,4 @@ class UserViewSet(
     def get_serializer_class(self):
         if self.action == 'create':
             return UserRegisterSerializer
-        return UserSerializer
+        return UserAccountSerializer

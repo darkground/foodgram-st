@@ -3,7 +3,7 @@ from rest_framework import serializers
 from core.models import Subscription, User
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserAccountSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField('get_is_subscribed')
 
     def get_is_subscribed(self, obj):

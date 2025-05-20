@@ -129,7 +129,10 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+SILENCED_SYSTEM_CHECKS = ['rest_framework.W001']
+
 REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': None,
     'PAGE_SIZE': 10,
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
@@ -138,6 +141,14 @@ REST_FRAMEWORK = {
     # 'DEFAULT_AUTHENTICATION_CLASSES': [
     #     'rest_framework_simplejwt.authentication.JWTAuthentication',
     # ],
+}
+
+DJOSER = {
+    "SERIALIZERS": {
+        "user": "api.serializers.UserAccountSerializer",
+        "user_create": "api.serializers.UserRegisterSerializer",
+        "current_user": "api.serializers.UserAccountSerializer",
+    },
 }
 
 # SIMPLE_JWT = {
