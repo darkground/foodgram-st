@@ -95,7 +95,7 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
 
 class IngredientInRecipeCreateSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(source='ingredient', queryset=Ingredient.objects.all())
-    amount = serializers.IntegerField()
+    amount = serializers.IntegerField(min_value=1)
 
     class Meta:
         model = IngredientInRecipe
