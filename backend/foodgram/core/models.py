@@ -164,7 +164,7 @@ class Favorite(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "subscribed_to"], name="uq_Favorite"
+                fields=["user", "recipe"], name="uq_Favorite"
             )
         ]
 
@@ -187,7 +187,7 @@ class ShoppingCart(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "subscribed_to"], name="uq_Shopcart"
+                fields=["user", "recipe"], name="uq_Shopcart"
             )
         ]
 
