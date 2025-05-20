@@ -94,33 +94,17 @@ class Recipe(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='recipes',
         verbose_name='Пользователь')
-    # IS_FAVORITED method field
-    # IS_IN_SHOPPING_CART method field
-    username = models.CharField(
-        verbose_name='Юзернейм пользователя',
-        max_length=150,
-        unique=True,
-        validators=[
-            RegexValidator(
-                regex=r'[\w.@+-]+',
-                message='Юзернейм пользователя может содержать только буквы, а также следующие символы: ./@/+/-'
-            ),
-        ],
-        error_messages={
-            'unique': "Пользователь с таким именем уже существует.",
-        },
-    )
     name = models.CharField(
         verbose_name='Название',
         max_length=256
-    )
-    text = models.TextField(
-        verbose_name='Описание'
     )
     image = models.URLField(
         verbose_name='Картинка',
         blank=True,
         null=True
+    )
+    text = models.TextField(
+        verbose_name='Описание'
     )
     cooking_time = models.IntegerField(
         verbose_name='Описание',
@@ -138,7 +122,7 @@ class Recipe(models.Model):
         ordering = ('id',)
 
     def __str__(self):
-        return self.username
+        return self.name
 
 
 class IngredientInRecipe(models.Model):
