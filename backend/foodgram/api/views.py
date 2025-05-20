@@ -3,16 +3,19 @@ from djoser.views import UserViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-from rest_framework import pagination, permissions, status
+from rest_framework import permissions, status
 
 from django_filters.rest_framework import DjangoFilterBackend
 
 from core.models import Ingredient, Recipe, Subscription, User
 
+from .pagination import LimitPagePagination
+from .permissions import IsAuthorOrReadOnly
 from .filters import IngredientFilter
 from .serializers import (
     AvatarUploadSerializer,
     IngredientSerializer,
+    RecipeCreateSerializer,
     RecipeSerializer,
     UserAccountSerializer,
     UserWithRecipeSerializer
@@ -25,7 +28,7 @@ class UserAccountViewSet(UserViewSet):
     serializer_class = UserAccountSerializer
 
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    pagination_class = pagination.LimitOffsetPagination
+    pagination_class = LimitPagePagination
 
     @action(
             methods=['get'], detail=False,
@@ -96,8 +99,16 @@ class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
 
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    pagination_class = pagination.LimitOffsetPagination
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
+    pagination_class = LimitPagePagination
+
+    def get_serializer_class(self):
+        if self.action in ['list', 'retrieve']:
+            return RecipeSerializer
+        return RecipeCreateSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
     @action(methods=['get'], detail=False)
     def get_link(self, request):
