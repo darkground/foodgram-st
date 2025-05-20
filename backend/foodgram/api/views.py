@@ -14,7 +14,8 @@ from .serializers import (
     AvatarUploadSerializer,
     IngredientSerializer,
     RecipeSerializer,
-    UserAccountSerializer
+    UserAccountSerializer,
+    UserWithRecipeSerializer
 )
 
 # Create your views here.
@@ -49,6 +50,17 @@ class UserAccountViewSet(UserViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @action(
+            methods=['get'], detail=False,
+            permission_classes=[permissions.IsAuthenticated])
+    def subscriptions(self, request):
+        queryset = User.objects.filter(subscribers__user=request.user)
+
+        pages = self.paginate_queryset(queryset)
+        serializer = UserWithRecipeSerializer(pages, many=True, context={'request': request})
+
+        return self.get_paginated_response(serializer.data)
 
 
 class RecipeViewSet(ModelViewSet):

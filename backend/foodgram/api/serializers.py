@@ -10,7 +10,7 @@ class UserAccountSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField('get_is_subscribed')
 
     def get_is_subscribed(self, obj):
-        user = getattr(self.context.get('request'), 'user')
+        user = self.context.get('request').user # type: ignore
         if user:
             return (
                 user.is_authenticated and
@@ -100,7 +100,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     is_in_shopping_cart = serializers.SerializerMethodField('get_is_in_shopping_cart')
 
     def get_is_favorited(self, obj):
-        user = getattr(self.context.get('request'), 'user')
+        user = self.context.get('request').user # type: ignore
         if user:
             return (
                 user.is_authenticated and
@@ -109,7 +109,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         return False
 
     def get_is_in_shopping_cart(self, obj):
-        user = getattr(self.context.get('request'), 'user')
+        user = self.context.get('request').user # type: ignore
         if user:
             return (
                 user.is_authenticated and
@@ -130,3 +130,34 @@ class RecipeSerializer(serializers.ModelSerializer):
             'text',
             'cooking_time'
         ]
+
+
+class RecipeShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = [
+            'id',
+            'name',
+            'image',
+            'cooking_time'
+        ]
+
+
+class UserWithRecipeSerializer(UserAccountSerializer):
+    recipes = serializers.SerializerMethodField('get_recipes')
+    recipes_count = serializers.ReadOnlyField(source='recipes.count')
+
+    class Meta:
+        fields = UserAccountSerializer.Meta.fields
+
+    def get_recipes(self, obj):
+        request = self.context.get('request')
+        query_params = request.query_params # type: ignore
+
+        recipes = obj.recipes.all()
+        recipes_limit = query_params.get("recipes_limit")
+
+        if recipes_limit and recipes_limit.isdigit():
+            recipes = recipes[:int(recipes_limit)]
+
+        return RecipeShortSerializer(recipes, context={"request": request}, many=True).data
