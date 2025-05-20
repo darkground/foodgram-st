@@ -1,9 +1,10 @@
+from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 
-from core.models import Recipe, Subscription, User
+from core.models import Ingredient, IngredientInRecipe, Recipe, Subscription, User
 
 
-class UserAccountSerializer(serializers.ModelSerializer):
+class UserAccountSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField('get_is_subscribed')
 
     def get_is_subscribed(self, obj):
@@ -29,7 +30,7 @@ class UserAccountSerializer(serializers.ModelSerializer):
         ]
 
 
-class UserRegisterSerializer(serializers.ModelSerializer):
+class UserRegisterSerializer(UserCreateSerializer):
     class Meta:
         model = User
         fields = [
@@ -37,11 +38,43 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             'email',
             'username',
             'first_name',
-            'last_name'
+            'last_name',
+            'password'
+        ]
+        extra_kwargs = {"password": {"write_only": True}}
+
+
+class IngredientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ingredient
+        fields = [
+            'id',
+            'name',
+            'measurement_unit'
+        ]
+
+
+class IngredientInRecipeSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    name = serializers.CharField(source='ingredient.name', read_only=True)
+    measurement_unit = serializers.CharField(
+        source='ingredient.measurement_unit',
+        read_only=True
+    )
+
+    class Meta:
+        model = IngredientInRecipe
+        fields = [
+            'id',
+            'name',
+            'measurement_unit',
+            'amount'
         ]
 
 
 class RecipeSerializer(serializers.ModelSerializer):
+    author = UserAccountSerializer()
+    ingredients = IngredientInRecipeSerializer(source="ingredient_amounts", many=True)
     is_favorited = serializers.SerializerMethodField('get_is_favorited')
     is_in_shopping_cart = serializers.SerializerMethodField('get_is_in_shopping_cart')
 
