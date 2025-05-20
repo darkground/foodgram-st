@@ -18,7 +18,7 @@ class User(AbstractUser):
         unique=True,
         validators=[
             RegexValidator(
-                regex=r'^[\w.@+-]+',
+                regex=r'^[\w.@+-]+\Z',
                 message='Юзернейм пользователя может содержать только буквы, а также следующие символы: ./@/+/-'
             ),
         ],
