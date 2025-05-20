@@ -1,7 +1,7 @@
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 
-from core.models import Ingredient, IngredientInRecipe, Recipe, Subscription, User
+from core.models import Favorite, Ingredient, IngredientInRecipe, Recipe, ShoppingCart, Subscription, User
 
 
 class UserAccountSerializer(UserSerializer):
@@ -79,10 +79,22 @@ class RecipeSerializer(serializers.ModelSerializer):
     is_in_shopping_cart = serializers.SerializerMethodField('get_is_in_shopping_cart')
 
     def get_is_favorited(self, obj):
-        return False # TODO
+        user = getattr(self.context.get('request'), 'user')
+        if user:
+            return (
+                user.is_authenticated and
+                Favorite.objects.filter(user__exact=user, recipe__exact=obj).exists()
+            )
+        return False
 
     def get_is_in_shopping_cart(self, obj):
-        return False # TODO
+        user = getattr(self.context.get('request'), 'user')
+        if user:
+            return (
+                user.is_authenticated and
+                ShoppingCart.objects.filter(user__exact=user, recipe__exact=obj).exists()
+            )
+        return False
 
     class Meta:
         model = Recipe
