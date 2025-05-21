@@ -21,7 +21,7 @@ from core.models import (
 
 from .pagination import LimitPagePagination
 from .permissions import IsAuthorOrReadOnly
-from .filters import IngredientFilter
+from .filters import IngredientFilter, RecipeFilter
 from .serializers import (
     AvatarUploadSerializer,
     IngredientSerializer,
@@ -37,7 +37,6 @@ from .serializers import (
 class UserAccountViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = UserAccountSerializer
-
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = LimitPagePagination
 
@@ -109,9 +108,10 @@ class UserAccountViewSet(UserViewSet):
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
     pagination_class = LimitPagePagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = RecipeFilter
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:
