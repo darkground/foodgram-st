@@ -1,5 +1,8 @@
+from django.shortcuts import get_object_or_404
+from django.views.generic.base import RedirectView
 from django.http import FileResponse
 from djoser.views import UserViewSet
+from django.urls import reverse
 from django.db.models import F, Sum
 
 from rest_framework.decorators import action
@@ -199,9 +202,12 @@ class RecipeViewSet(ModelViewSet):
             content_type='text/plain'
         )
 
-    @action(methods=['get'], detail=False)
-    def get_link(self, request):
-        return Response('https://foodgram.example.org/s/3d0') # TODO
+    @action(methods=['get'], detail=True, url_path='get-link')
+    def get_link(self, request, pk):
+        recipe = self.get_object()
+        link = reverse('short-link', kwargs={'short_link': f'{recipe.id:x}'})
+        url = request.build_absolute_uri(link)
+        return Response({'short-link': url}, status=status.HTTP_200_OK)
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
@@ -210,3 +216,15 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     permission_classes = (permissions.AllowAny,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
+
+
+class ShortRedirectView(RedirectView):
+    permanent = False
+
+    def get_redirect_url(self, short_link):
+        try:
+            recipe_id = int(short_link, 16)
+            get_object_or_404(Recipe, id=recipe_id)
+            return f'/recipes/{recipe_id}'
+        except:
+            return f'/404'
