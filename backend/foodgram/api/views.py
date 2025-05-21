@@ -71,7 +71,7 @@ class UserAccountViewSet(UserViewSet):
             methods=['get'], detail=False,
             permission_classes=[permissions.IsAuthenticated])
     def subscriptions(self, request):
-        queryset = User.objects.filter(subscribers__user=request.user)
+        queryset = User.objects.filter(subscribed__user=request.user)
 
         pages = self.paginate_queryset(queryset)
         serializer = UserWithRecipeSerializer(pages, many=True, context={'request': request})
