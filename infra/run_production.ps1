@@ -12,6 +12,9 @@ if ($Setup) {
 Write-Host "** Running: docker compose up --build **"
 docker compose up --force-recreate --build -d
 
+Write-Host "** Waiting for postgres to start up **"
+Start-Sleep -Seconds 10
+
 Write-Host "** Setting up migrations **"
 docker compose exec backend python foodgram/manage.py migrate | Out-Null
 
