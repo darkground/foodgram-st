@@ -3,18 +3,27 @@ from rest_framework import serializers
 
 from drf_extra_fields import fields as drfx_fields
 
-from core.models import Favorite, Ingredient, IngredientInRecipe, Recipe, ShoppingCart, Subscription, User
+from core.models import (
+    Favorite,
+    Ingredient,
+    IngredientInRecipe,
+    Recipe,
+    ShoppingCart,
+    Subscription,
+    User
+)
 
 
 class UserAccountSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField('get_is_subscribed')
 
     def get_is_subscribed(self, obj):
-        user = self.context.get('request').user # type: ignore
+        user = self.context.get('request').user  # type: ignore
         if user:
             return (
-                user.is_authenticated and
-                Subscription.objects.filter(user__exact=user, subscribed_to__exact=obj).exists()
+                user.is_authenticated
+                and Subscription.objects.filter(
+                    user__exact=user, subscribed_to__exact=obj).exists()
             )
         return False
 
@@ -59,7 +68,6 @@ class AvatarUploadSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-
     class Meta:
         model = User
         fields = ('avatar',)
@@ -78,7 +86,8 @@ class IngredientSerializer(serializers.ModelSerializer):
 class IngredientInRecipeSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source='ingredient.id')
     name = serializers.ReadOnlyField(source='ingredient.name')
-    measurement_unit = serializers.ReadOnlyField(source='ingredient.measurement_unit')
+    measurement_unit = serializers.ReadOnlyField(
+        source='ingredient.measurement_unit')
 
     class Meta:
         model = IngredientInRecipe
@@ -91,7 +100,8 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
 
 
 class IngredientInRecipeCreateSerializer(serializers.ModelSerializer):
-    id = serializers.PrimaryKeyRelatedField(source='ingredient', queryset=Ingredient.objects.all())
+    id = serializers.PrimaryKeyRelatedField(
+        source='ingredient', queryset=Ingredient.objects.all())
     amount = serializers.IntegerField(min_value=1)
 
     class Meta:
@@ -104,25 +114,29 @@ class IngredientInRecipeCreateSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     author = UserAccountSerializer()
-    ingredients = IngredientInRecipeSerializer(source="ingredient_amounts", many=True)
+    ingredients = IngredientInRecipeSerializer(
+        source="ingredient_amounts", many=True)
     is_favorited = serializers.SerializerMethodField('get_is_favorited')
-    is_in_shopping_cart = serializers.SerializerMethodField('get_is_in_shopping_cart')
+    is_in_shopping_cart = serializers.SerializerMethodField(
+        method_name='get_is_in_shopping_cart')
 
     def get_is_favorited(self, obj):
-        user = self.context.get('request').user # type: ignore
+        user = self.context.get('request').user  # type: ignore
         if user:
             return (
-                user.is_authenticated and
-                Favorite.objects.filter(user__exact=user, recipe__exact=obj).exists()
+                user.is_authenticated
+                and Favorite.objects.filter(
+                    user__exact=user, recipe__exact=obj).exists()
             )
         return False
 
     def get_is_in_shopping_cart(self, obj):
-        user = self.context.get('request').user # type: ignore
+        user = self.context.get('request').user  # type: ignore
         if user:
             return (
-                user.is_authenticated and
-                ShoppingCart.objects.filter(user__exact=user, recipe__exact=obj).exists()
+                user.is_authenticated
+                and ShoppingCart.objects.filter(
+                    user__exact=user, recipe__exact=obj).exists()
             )
         return False
 
@@ -157,16 +171,19 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     def validate_image(self, image):
         if not image:
-            raise serializers.ValidationError('Картинка является обязательным полем.')
+            raise serializers.ValidationError(
+                'Картинка является обязательным полем.')
         return image
 
     def validate_ingredients(self, ingredients):
         if not ingredients:
-            raise serializers.ValidationError('Ингредиенты является обязательным полем.')
+            raise serializers.ValidationError(
+                'Ингредиенты является обязательным полем.')
 
         ids = [ingredient['ingredient'].id for ingredient in ingredients]
         if len(ids) != len(set(ids)):
-            raise serializers.ValidationError('Ингредиенты должны быть уникальны.')
+            raise serializers.ValidationError(
+                'Ингредиенты должны быть уникальны.')
 
         return ingredients
 
@@ -228,7 +245,7 @@ class UserWithRecipeSerializer(UserAccountSerializer):
 
     def get_recipes(self, obj):
         request = self.context.get('request')
-        query_params = request.query_params # type: ignore
+        query_params = request.query_params  # type: ignore
 
         recipes = obj.recipes.all()
         recipes_limit = query_params.get("recipes_limit")
@@ -236,7 +253,8 @@ class UserWithRecipeSerializer(UserAccountSerializer):
         if recipes_limit and recipes_limit.isdigit():
             recipes = recipes[:int(recipes_limit)]
 
-        return RecipeShortSerializer(recipes, context={"request": request}, many=True).data
+        return RecipeShortSerializer(
+            recipes, context={"request": request}, many=True).data
 
 
 class FavoriteSerializer(serializers.ModelSerializer):

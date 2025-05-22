@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import RedirectView
-from django.http import FileResponse
+from django.http import FileResponse, Http404
 from djoser.views import UserViewSet
 from django.urls import reverse
 from django.db.models import F, Sum
@@ -35,7 +35,6 @@ from .serializers import (
     UserWithRecipeSerializer
 )
 
-# Create your views here.
 
 class UserAccountViewSet(UserViewSet):
     queryset = User.objects.all()
@@ -43,19 +42,18 @@ class UserAccountViewSet(UserViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = LimitPagePagination
 
-    @action(
-            methods=['get'], detail=False,
+    @action(methods=['get'], detail=False,
             permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
-    @action(
-            methods=['put', 'delete'], detail=True,
+    @action(methods=['put', 'delete'], detail=True,
             permission_classes=[permissions.IsAuthenticated])
     def avatar(self, request, id):
         if request.method == 'PUT':
-            serializer = AvatarUploadSerializer(request.user, data=request.data, partial=True)
+            serializer = AvatarUploadSerializer(
+                request.user, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -67,14 +65,14 @@ class UserAccountViewSet(UserViewSet):
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    @action(
-            methods=['get'], detail=False,
+    @action(methods=['get'], detail=False,
             permission_classes=[permissions.IsAuthenticated])
     def subscriptions(self, request):
         queryset = User.objects.filter(subscribed__user=request.user)
 
         pages = self.paginate_queryset(queryset)
-        serializer = UserWithRecipeSerializer(pages, many=True, context={'request': request})
+        serializer = UserWithRecipeSerializer(
+            pages, many=True, context={'request': request})
 
         return self.get_paginated_response(serializer.data)
 
@@ -111,7 +109,10 @@ class UserAccountViewSet(UserViewSet):
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+        IsAuthorOrReadOnly
+    ]
     pagination_class = LimitPagePagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
@@ -191,7 +192,10 @@ class RecipeViewSet(ModelViewSet):
 
         if ingredients:
             for ingred in ingredients:
-                buy_list += f'\n{ingred["name"]} - {ingred["amount"]} ({ingred["unit"]})'
+                buy_list += (
+                    f'\n{ingred["name"]} - '
+                    f'{ingred["amount"]} ({ingred["unit"]})'
+                )
         else:
             buy_list += '\nПусто!'
 
@@ -226,5 +230,5 @@ class ShortRedirectView(RedirectView):
             recipe_id = int(short_link, 16)
             get_object_or_404(Recipe, id=recipe_id)
             return f'/recipes/{recipe_id}'
-        except:
-            return f'/404'
+        except (Http404, ValueError):
+            return '/404'

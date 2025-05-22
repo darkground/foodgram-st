@@ -12,7 +12,6 @@ from .models import (
     User
 )
 
-# Register your models here.
 
 @register(User)
 class UserConfig(UserAdmin):
@@ -26,6 +25,7 @@ class UserConfig(UserAdmin):
     ]
     list_filter = ['username', 'email']
     search_fields = ['username', 'email']
+
 
 @register(Recipe)
 class RecipeConfig(ModelAdmin):
@@ -51,6 +51,7 @@ class RecipeConfig(ModelAdmin):
     def favorites(self, obj):
         return obj.users_in_favorite.count()
 
+
 @register(IngredientInRecipe)
 class IngredientInRecipeConfig(ModelAdmin):
     list_display = [
@@ -60,6 +61,7 @@ class IngredientInRecipeConfig(ModelAdmin):
         'amount'
     ]
 
+
 @register(ShoppingCart)
 class ShoppingCartConfig(ModelAdmin):
     list_display = [
@@ -68,6 +70,7 @@ class ShoppingCartConfig(ModelAdmin):
         'recipe'
     ]
 
+
 @register(Favorite)
 class FavoriteConfig(ModelAdmin):
     list_display = [
@@ -75,6 +78,7 @@ class FavoriteConfig(ModelAdmin):
         'user',
         'recipe'
     ]
+
 
 @register(Subscription)
 class SubscriptionConfig(ModelAdmin):
@@ -85,6 +89,7 @@ class SubscriptionConfig(ModelAdmin):
     ]
     search_fields = ['user__username', 'subscribed_to__username']
     list_filter = ['user', 'subscribed_to']
+
 
 @register(Ingredient)
 class IngredientConfig(ModelAdmin):

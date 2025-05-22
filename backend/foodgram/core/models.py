@@ -19,7 +19,10 @@ class User(AbstractUser):
         validators=[
             RegexValidator(
                 regex=r'^[\w.@+-]+\Z',
-                message='Юзернейм пользователя может содержать только буквы, а также следующие символы: ./@/+/-'
+                message=(
+                    'Юзернейм пользователя может содержать только буквы, '
+                    'а также следующие символы: ./@/+/-'
+                )
             ),
         ],
         error_messages={
@@ -117,7 +120,10 @@ class Recipe(models.Model):
         validators=[
             MinValueValidator(
                 limit_value=1,
-                message='Время приготовления должно быть больше или равно одной минуте'
+                message=(
+                    'Время приготовления должно быть '
+                    'больше или равно одной минуте'
+                )
             )
         ]
     )
@@ -137,11 +143,11 @@ class Recipe(models.Model):
 
 class IngredientInRecipe(models.Model):
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name='ingredient_amounts',
-        verbose_name='Рецепт')
+        Recipe, on_delete=models.CASCADE,
+        related_name='ingredient_amounts', verbose_name='Рецепт')
     ingredient = models.ForeignKey(
-        Ingredient, on_delete=models.CASCADE, related_name='ingredient_amounts',
-        verbose_name='Ингридиент')
+        Ingredient, on_delete=models.CASCADE,
+        related_name='ingredient_amounts', verbose_name='Ингридиент')
     amount = models.IntegerField(
         validators=[MinValueValidator(1)],
         verbose_name='Количество',

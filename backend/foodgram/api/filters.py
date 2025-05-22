@@ -6,6 +6,7 @@ from django_filters.filters import (
 
 from core.models import Ingredient, Recipe
 
+
 class IngredientFilter(FilterSet):
     name = CharFilter(
         field_name='name',
@@ -16,6 +17,7 @@ class IngredientFilter(FilterSet):
         model = Ingredient
         fields = ['name']
 
+
 class RecipeFilter(FilterSet):
     STATUS_CHOICES = (
         (0, False),
@@ -24,17 +26,19 @@ class RecipeFilter(FilterSet):
         (True, True)
     )
 
-    is_favorited = ChoiceFilter(choices=STATUS_CHOICES, method='get_is_favorited')
-    is_in_shopping_cart = ChoiceFilter(choices=STATUS_CHOICES, method='get_is_in_shopping_cart')
+    is_favorited = ChoiceFilter(
+        choices=STATUS_CHOICES, method='get_is_favorited')
+    is_in_shopping_cart = ChoiceFilter(
+        choices=STATUS_CHOICES, method='get_is_in_shopping_cart')
 
     def get_is_favorited(self, queryset, name, value):
-        user = self.request.user # type: ignore
+        user = self.request.user  # type: ignore
         if user.is_authenticated and value:
             return Recipe.objects.filter(users_in_favorite__user=user)
         return queryset
 
     def get_is_in_shopping_cart(self, queryset, name, value):
-        user = self.request.user # type: ignore
+        user = self.request.user  # type: ignore
         if user.is_authenticated and value:
             return Recipe.objects.filter(users_in_shopcart__user=user)
         return queryset
