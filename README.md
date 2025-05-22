@@ -36,7 +36,7 @@ powershell.exe -ExecutionPolicy ByPass .\infra\run_development.ps1 -Setup
 # Последующие запуски, не требующие установок пакетов
 powershell.exe -ExecutionPolicy ByPass .\infra\run_development.ps1
 
-# Также можно запустить сервер Django нажав ПКМ по скрипку в папке,
+# Также можно запустить сервер Django нажав ПКМ по скрипту в папке,
 # затем в контекстном меню 'Выполнить с помощью Powershell'.
 # ПРИМЕЧАНИЕ: Может потребоваться изменение политики выполнения скриптов в системе
 ```
@@ -105,7 +105,7 @@ powershell.exe -ExecutionPolicy ByPass .\infra\run_production.ps1 -Setup
 # Последующие запуски, не требующие установок пакетов
 powershell.exe -ExecutionPolicy ByPass .\infra\run_production.ps1
 
-# Также можно запустить сервер Django нажав ПКМ по скрипку в папке,
+# Также можно запустить стек нажав ПКМ по скрипту в папке,
 # затем в контекстном меню 'Выполнить с помощью Powershell'.
 # ПРИМЕЧАНИЕ: Может потребоваться изменение политики выполнения скриптов в системе
 ```
