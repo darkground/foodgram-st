@@ -1,6 +1,6 @@
 param(
     [switch]$Setup = $false,
-    [string]$EnvFile = ".env_dev"
+    [string]$EnvFile = ".env"
 )
 
 Write-Host "Deploying Foodgram for local development"
@@ -13,6 +13,13 @@ $MediaBackend = "$Backend/foodgram/media"
 $Venv = Resolve-Path "$Backend/venv/Scripts/Activate.ps1"
 $Requirements = Resolve-Path "$Backend/requirements.txt"
 $Env = Resolve-Path "$PSScriptRoot/$EnvFile"
+
+if ($Setup) {
+Write-Host "** Creating virtual environment **"
+Push-Location $Backend
+py -m venv venv
+Pop-Location
+}
 
 Write-Host "** Activating virtual environment **"
 . $Venv | Out-Null
