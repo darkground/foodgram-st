@@ -7,7 +7,7 @@ services:
     image: postgres:17.5
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    env_file: .env_prod
+    env_file: .env
 
   backend:
     container_name: foodgram-backend
@@ -17,7 +17,7 @@ services:
     volumes:
       - volume_static:/app/foodgram/static/
       - volume_media:/app/foodgram/media/
-    env_file: .env_prod
+    env_file: .env
 
   frontend:
     container_name: foodgram-front
@@ -26,7 +26,7 @@ services:
     build: ../frontend
     volumes:
       - ../frontend/:/app/result_build/
-    env_file: .env_prod
+    env_file: .env
 
   nginx:
     container_name: foodgram-proxy
@@ -41,7 +41,7 @@ services:
       - ../docs/:/usr/share/nginx/html/api/docs/
       - volume_static:/usr/share/nginx/html/api/static/
       - volume_media:/usr/share/nginx/html/api/media/
-    env_file: .env_prod
+    env_file: .env
 
 volumes:
   volume_static:

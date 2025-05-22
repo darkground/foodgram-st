@@ -1,8 +1,6 @@
 frontend/node_modules
 infra/frontend/build
 .env
-.env_dev
-.env_prod
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
