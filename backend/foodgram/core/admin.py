@@ -37,18 +37,19 @@ class RecipeConfig(ModelAdmin):
         'image',
         'text',
         'cooking_time',
-        'favorites'
+        'favorites',
+        'created'
     ]
     list_filter = ['name', 'author']
     search_fields = ['name', 'author__username']
 
-    @admin.display()
+    @admin.display(description='Количество ингредиентов')
     def ingredients(self, obj):
         return obj.ingredients.count()
 
-    @admin.display()
+    @admin.display(description='Добвлено в избранное')
     def favorites(self, obj):
-        return obj.favorites.count()
+        return obj.users_in_favorite.count()
 
 @register(IngredientInRecipe)
 class IngredientInRecipeConfig(ModelAdmin):
