@@ -3,31 +3,31 @@ param(
 )
 
 Write-Host "Deploying Foodgram for production server"
-$Infra = $PSScriptRoot
-$Initdata = "/app/data/ingredients.json"
+$MediaVolume = Resolve-Path "$PSScriptRoot/../data/volume"
+
+Push-Location $PSScriptRoot
 
 if ($Setup) {
-Write-Host "** Running: docker compose up (setup)**"
+
+Write-Host "** Running: docker compose up --build **"
 docker compose up --force-recreate --build -d
-} else {
-Write-Host "** Running: docker compose up (no setup)**"
-docker compose up -d
-}
 
-if ($Setup) {
 Write-Host "** Setting up migrations **"
 docker compose exec backend python foodgram/manage.py migrate | Out-Null
 
-Write-Host "** Creating superuser root@foodgram.com:root **"
-"from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('root', 'root@foodgram.com', 'root')" | docker compose exec backend python foodgram/manage.py shell | Out-Null
+Write-Host "** Copying volume data **"
+docker cp $MediaVolume/. foodgram-backend:/app/foodgram/media
 
-Write-Host "** Importing ingredients data **"
-"from core.models import Ingredient; from json import loads; `
-fl = open(r'$Initdata', mode='r', encoding='utf-8'); jsn = loads(fl.read()); fl.close(); `
-Ingredient.objects.bulk_create([Ingredient(name=item['name'], measurement_unit=item['measurement_unit']) for item in jsn]);" | docker compose exec backend python foodgram/manage.py shell | Out-Null
+Write-Host "** Importing fixture data **"
+docker compose exec backend python foodgram/manage.py loaddata data/initial_data.json | Out-Null
 
 Write-Host "** Collecting static **"
 docker compose exec backend python foodgram/manage.py collectstatic --noinput | Out-Null
+} else {
+Write-Host "** Running: docker compose up **"
+docker compose up -d
 }
+
+Pop-Location
 
 Write-Host "** Success **"
