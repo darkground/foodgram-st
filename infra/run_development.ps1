@@ -1,6 +1,7 @@
 param(
     [switch]$Setup = $false,
-    [switch]$ClearData = $false
+    [switch]$ClearData = $false,
+    [string]$EnvFile = ".env_dev"
 )
 
 Write-Host "Deploying Foodgram for local development"
@@ -34,7 +35,7 @@ exit(1) if not delete_num else exit(0);" | py $ManagePy shell | Out-Null
 }
 
 Write-Host "** Setting up environment variables **"
-Get-Content .env | ForEach-Object {
+Get-Content $EnvFile | ForEach-Object {
     $name, $value = $_.split('=')
 
     if ([string]::IsNullOrWhiteSpace($name) -or $name.Contains('#')) { return }
