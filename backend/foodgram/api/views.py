@@ -1,9 +1,9 @@
-from django.shortcuts import get_object_or_404
 from django.views.generic.base import RedirectView
-from django.http import FileResponse, Http404
-from djoser.views import UserViewSet
-from django.urls import reverse
 from django.db.models import F, Sum
+from django.shortcuts import get_object_or_404
+from djoser.views import UserViewSet
+from django.http import FileResponse, Http404
+from django.urls import reverse
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
