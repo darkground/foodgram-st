@@ -10,7 +10,6 @@ $Initdata = Resolve-Path "$Backend/data/initial_data.json"
 $ManagePy = Resolve-Path "$Backend/foodgram/manage.py"
 $MediaVolume = Resolve-Path "$Infra/../data/volume"
 $MediaBackend = "$Backend/foodgram/media"
-$Venv = Resolve-Path "$Backend/venv/Scripts/Activate.ps1"
 $Requirements = Resolve-Path "$Backend/requirements.txt"
 $Env = Resolve-Path "$PSScriptRoot/$EnvFile"
 
@@ -20,6 +19,7 @@ Push-Location $Backend
 py -m venv venv
 Pop-Location
 }
+$Venv = Resolve-Path "$Backend/venv/Scripts/Activate.ps1"
 
 Write-Host "** Activating virtual environment **"
 . $Venv | Out-Null

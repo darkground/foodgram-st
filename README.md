@@ -73,7 +73,7 @@ py backend/foodgram/manage.py collectstatic --noinput
 
 Скопируйте тестовые медиа-данные:
 ```powershell
-cp data/volume backend/foodgram/media
+cp data/volume backend/foodgram/media -Recurse
 ```
 
 Запустите сервер:
@@ -118,11 +118,6 @@ powershell.exe -ExecutionPolicy ByPass .\infra\run_production.ps1
 docker compose up --force-recreate --build -d
 ```
 
-Установите необходимые пакеты:
-```powershell
-pip install -r requirements.txt
-```
-
 Для полного запуска рекомендуются параметры `DJANGO_IS_DEBUG=False` и `DJANGO_IS_SQLITE3=False`.
 
 Выполните миграции, импорт тестовых данных и коллекцию статики:
@@ -134,5 +129,5 @@ docker compose exec backend python foodgram/manage.py collectstatic --noinput
 
 Скопируйте тестовые медиа-данные:
 ```powershell
-docker cp $MediaVolume/. foodgram-backend:/app/foodgram/media
+docker cp ../data/volume/. foodgram-backend:/app/foodgram/media
 ```
