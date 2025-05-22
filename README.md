@@ -85,7 +85,7 @@ py backend/foodgram/manage.py runserver
 ### Полный запуск с Docker
 
 Запуск всего compose-стека в Docker (включает Django, PostgreSQL и Nginx).
-Перед запуском установите Docker для своей ОС:
+Перед запуском установите Docker для своей ОС и создайте свой файл .env (пример можно найти в example.env):
 - **[Docker on Windows](https://docs.docker.com/docker-for-windows/install/)**
 - **[Docker on macOS](https://docs.docker.com/docker-for-mac/install/)**
 - **[Docker on Linux](https://docs.docker.com/engine/install/)**
