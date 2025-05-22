@@ -37,7 +37,7 @@ Write-Host "** Setting up migrations **"
 py $ManagePy migrate | Out-Null
 
 Write-Host "** Copying volume data **"
-Copy-Item $MediaVolume $MediaBackend -Recurse
+Copy-Item $MediaVolume $MediaBackend -Recurse -ErrorAction Ignore
 
 Write-Host "** Importing fixture data **"
 py $ManagePy loaddata $Initdata
