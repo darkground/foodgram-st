@@ -20,7 +20,7 @@
 ### Неполный (локальный) запуск
 
 Запуск сервера Django с опцией DEBUG и базой данных SQLite3.  
-Перед запуском создайте свой файл .env (пример можно найти в example.env)
+Перед запуском установите [Python 3.10](https://www.python.org/downloads/release/python-3100/) и создайте свой файл .env (пример можно найти в example.env)
 
 После запуска можно будет посмотреть следующие страницы:
 - **http://localhost:8000/** - Ссылка на основную страницу бэкенда
@@ -85,6 +85,10 @@ py backend/foodgram/manage.py runserver
 ### Полный запуск с Docker
 
 Запуск всего compose-стека в Docker (включает Django, PostgreSQL и Nginx).
+Перед запуском установите Docker для своей ОС:
+- **[Docker on Windows](https://docs.docker.com/docker-for-windows/install/)**
+- **[Docker on macOS](https://docs.docker.com/docker-for-mac/install/)**
+- **[Docker on Linux](https://docs.docker.com/engine/install/)**
 
 После запуска можно будет посмотреть следующие страницы:
 - **http://localhost/** - Ссылка на основную страницу Foodgram
