@@ -7,7 +7,7 @@ param(
 Write-Host "Deploying Foodgram for local development"
 $Infra = $PSScriptRoot
 $Backend = Resolve-Path "$Infra/../backend"
-$Initdata = Resolve-Path "$Infra/../data/ingredients.json"
+$Initdata = Resolve-Path "$Backend/data/ingredients.json"
 $ManagePy = Resolve-Path "$Backend/foodgram/manage.py"
 $Venv = Resolve-Path "$Backend/venv/Scripts/Activate.ps1"
 $Requirements = Resolve-Path "$Backend/requirements.txt"
