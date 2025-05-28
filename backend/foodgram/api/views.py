@@ -18,7 +18,6 @@ from core.models import (
     IngredientInRecipe,
     Recipe,
     ShoppingCart,
-    Subscription,
     User
 )
 
@@ -136,7 +135,7 @@ class RecipeViewSet(ModelViewSet):
     def shopping_cart(self, request, pk):
         user = request.user
         recipe = self.get_object()
-        shopcart = ShoppingCart.objects.filter(user=user, recipe=recipe)
+        shopcart = user.shopping_cart.filter(recipe=recipe)
 
         if request.method == "POST":
             if shopcart.exists():
