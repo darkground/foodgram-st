@@ -84,7 +84,7 @@ class UserAccountViewSet(UserViewSet):
     def subscribe(self, request, id):
         subscriber = request.user
         user = self.get_object()
-        sub = Subscription.objects.filter(user=subscriber, subscribed_to=user)
+        sub = subscriber.subscribers.filter(subscribed_to=user)
 
         if request.method == 'POST':
             if subscriber == user or sub.exists():
