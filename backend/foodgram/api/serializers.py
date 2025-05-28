@@ -13,6 +13,9 @@ from core.models import (
     User
 )
 
+MIN_INGREDIENT_AMOUNT = 1
+MAX_INGREDIENT_AMOUNT = 32_000
+
 
 class UserAccountSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField('get_is_subscribed')
@@ -102,7 +105,8 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
 class IngredientInRecipeCreateSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
         source='ingredient', queryset=Ingredient.objects.all())
-    amount = serializers.IntegerField(min_value=1)
+    amount = serializers.IntegerField(
+        min_value=MIN_INGREDIENT_AMOUNT, max_value=MAX_INGREDIENT_AMOUNT)
 
     class Meta:
         model = IngredientInRecipe
