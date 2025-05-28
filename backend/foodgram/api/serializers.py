@@ -9,6 +9,7 @@ from core.models import (
     IngredientInRecipe,
     Recipe,
     ShoppingCart,
+    Subscription,
     User
 )
 
@@ -259,6 +260,27 @@ class UserWithRecipeSerializer(UserAccountSerializer):
 
         return RecipeShortSerializer(
             recipes, context={"request": request}, many=True).data
+
+
+class SubscribeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscription
+        fields = [
+            "user",
+            "subscribed_to"
+        ]
+
+    def validate(self, data):
+        user = data.get('user')
+        subscriber = data.get('subscribed_to')
+        if user == subscriber:
+            raise serializers.ValidationError(
+                'Нельзя подписаться на себя')
+        sub = subscriber.subscribed.filter(user=user)
+        if sub.exists():
+            raise serializers.ValidationError(
+                'Вы уже подписаны на этого пользователя')
+        return data
 
 
 class FavoriteSerializer(serializers.ModelSerializer):

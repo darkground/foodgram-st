@@ -32,7 +32,8 @@ from .serializers import (
     RecipeSerializer,
     RecipeShortSerializer,
     UserAccountSerializer,
-    UserWithRecipeSerializer
+    UserWithRecipeSerializer,
+    SubscribeSerializer
 )
 
 
@@ -87,10 +88,12 @@ class UserAccountViewSet(UserViewSet):
         sub = subscriber.subscribers.filter(subscribed_to=user)
 
         if request.method == 'POST':
-            if subscriber == user or sub.exists():
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-
-            Subscription.objects.create(user=subscriber, subscribed_to=user)
+            subSerializer = SubscribeSerializer(
+                data={ 'user': subscriber.id, 'subscribed_to': user.id },
+                context={ 'request': request }
+            )
+            subSerializer.is_valid(raise_exception=True)
+            subSerializer.save()
 
             serializer = UserWithRecipeSerializer(user, context={
                 'request': request,
