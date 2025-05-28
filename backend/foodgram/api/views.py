@@ -88,8 +88,8 @@ class UserAccountViewSet(UserViewSet):
 
         if request.method == 'POST':
             subSerializer = SubscribeSerializer(
-                data={ 'user': subscriber.id, 'subscribed_to': user.id },
-                context={ 'request': request }
+                data={'user': subscriber.id, 'subscribed_to': user.id},
+                context={'request': request}
             )
             subSerializer.is_valid(raise_exception=True)
             subSerializer.save()

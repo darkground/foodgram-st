@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
+from django.core.validators import (
+    RegexValidator,
+    MinValueValidator,
+    MaxValueValidator
+)
 
 from core.const import (
     MIN_COOKING_TIME,

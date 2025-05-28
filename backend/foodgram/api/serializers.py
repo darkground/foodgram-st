@@ -164,7 +164,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     ingredients = IngredientInRecipeCreateSerializer(many=True)
     image = drfx_fields.Base64ImageField()
     cooking_time = serializers.IntegerField(
-            min_value=MIN_COOKING_TIME, max_value=MAX_COOKING_TIME)
+        min_value=MIN_COOKING_TIME, max_value=MAX_COOKING_TIME)
 
     class Meta:
         model = Recipe
