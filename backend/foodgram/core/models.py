@@ -1,6 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import RegexValidator, MinValueValidator
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
+
+
+MIN_COOKING_TIME = 1
+MAX_COOKING_TIME = 32_000
+MIN_INGREDIENT_AMOUNT = 1
+MAX_INGREDIENT_AMOUNT = 32_000
 
 
 class User(AbstractUser):
@@ -119,10 +125,17 @@ class Recipe(models.Model):
         verbose_name='Время приготовления',
         validators=[
             MinValueValidator(
-                limit_value=1,
+                limit_value=MIN_COOKING_TIME,
                 message=(
                     'Время приготовления должно быть '
-                    'больше или равно одной минуте'
+                    f'больше или равно {MIN_COOKING_TIME} минут'
+                )
+            ),
+            MaxValueValidator(
+                limit_value=MAX_COOKING_TIME,
+                message=(
+                    'Время приготовления должно быть '
+                    f'меньше {MAX_COOKING_TIME} минут'
                 )
             )
         ]
@@ -149,7 +162,22 @@ class IngredientInRecipe(models.Model):
         Ingredient, on_delete=models.CASCADE,
         related_name='ingredient_amounts', verbose_name='Ингридиент')
     amount = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1)],
+        validators=[
+            MinValueValidator(
+                limit_value=MIN_INGREDIENT_AMOUNT,
+                message=(
+                    'Количество ингредиентов должно быть '
+                    f'больше или равно {MIN_INGREDIENT_AMOUNT} шт.'
+                )
+            ),
+            MaxValueValidator(
+                limit_value=MAX_INGREDIENT_AMOUNT,
+                message=(
+                    'Количество ингредиентов должно быть '
+                    f'меньше {MAX_INGREDIENT_AMOUNT} шт.'
+                )
+            )
+        ],
         verbose_name='Количество',
     )
 
