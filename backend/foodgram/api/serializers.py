@@ -13,10 +13,12 @@ from core.models import (
     User
 )
 
-MIN_INGREDIENT_AMOUNT = 1
-MAX_INGREDIENT_AMOUNT = 32_000
-MIN_COOKING_TIME = 1
-MAX_COOKING_TIME = 32_000
+from core.const import (
+    MIN_COOKING_TIME,
+    MAX_COOKING_TIME,
+    MIN_INGREDIENT_AMOUNT,
+    MAX_INGREDIENT_AMOUNT
+)
 
 
 class UserAccountSerializer(UserSerializer):

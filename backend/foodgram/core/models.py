@@ -2,11 +2,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 
-
-MIN_COOKING_TIME = 1
-MAX_COOKING_TIME = 32_000
-MIN_INGREDIENT_AMOUNT = 1
-MAX_INGREDIENT_AMOUNT = 32_000
+from core.const import (
+    MIN_COOKING_TIME,
+    MAX_COOKING_TIME,
+    MIN_INGREDIENT_AMOUNT,
+    MAX_INGREDIENT_AMOUNT
+)
 
 
 class User(AbstractUser):
