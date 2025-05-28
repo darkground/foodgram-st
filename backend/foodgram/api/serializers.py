@@ -129,8 +129,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         if user:
             return (
                 user.is_authenticated
-                and Favorite.objects.filter(
-                    user__exact=user, recipe__exact=obj).exists()
+                and user.favorites.filter(recipe__exact=obj).exists()
             )
         return False
 
