@@ -138,8 +138,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         if user:
             return (
                 user.is_authenticated
-                and ShoppingCart.objects.filter(
-                    user__exact=user, recipe__exact=obj).exists()
+                and user.shopping_cart.filter(recipe__exact=obj).exists()
             )
         return False
 
