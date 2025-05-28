@@ -159,7 +159,7 @@ class RecipeViewSet(ModelViewSet):
     def favorite(self, request, pk):
         user = request.user
         recipe = self.get_object()
-        fav = Favorite.objects.filter(user=user, recipe=recipe)
+        fav = user.favorites.filter(recipe=recipe)
 
         if request.method == "POST":
             if fav.exists():
