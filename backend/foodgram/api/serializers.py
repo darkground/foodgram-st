@@ -9,7 +9,6 @@ from core.models import (
     IngredientInRecipe,
     Recipe,
     ShoppingCart,
-    Subscription,
     User
 )
 
@@ -25,8 +24,7 @@ class UserAccountSerializer(UserSerializer):
         if user:
             return (
                 user.is_authenticated
-                and Subscription.objects.filter(
-                    user__exact=user, subscribed_to__exact=obj).exists()
+                and user.subscribers.filter(subscribed_to__exact=obj).exists()
             )
         return False
 
