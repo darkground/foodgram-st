@@ -14,6 +14,8 @@ from core.models import (
 
 MIN_INGREDIENT_AMOUNT = 1
 MAX_INGREDIENT_AMOUNT = 32_000
+MIN_COOKING_TIME = 1
+MAX_COOKING_TIME = 32_000
 
 
 class UserAccountSerializer(UserSerializer):
@@ -158,6 +160,8 @@ class RecipeSerializer(serializers.ModelSerializer):
 class RecipeCreateSerializer(serializers.ModelSerializer):
     ingredients = IngredientInRecipeCreateSerializer(many=True)
     image = drfx_fields.Base64ImageField()
+    cooking_time = serializers.IntegerField(
+            min_value=MIN_COOKING_TIME, max_value=MAX_COOKING_TIME)
 
     class Meta:
         model = Recipe
