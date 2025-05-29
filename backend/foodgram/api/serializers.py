@@ -25,7 +25,7 @@ class UserAccountSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField('get_is_subscribed')
 
     def get_is_subscribed(self, obj):
-        user = self.context.get('request').user  # type: ignore
+        user = self.context['request'].user
         if user:
             return (
                 user.is_authenticated
@@ -128,7 +128,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         method_name='get_is_in_shopping_cart')
 
     def get_is_favorited(self, obj):
-        user = self.context.get('request').user  # type: ignore
+        user = self.context['request'].user
         if user:
             return (
                 user.is_authenticated
@@ -137,7 +137,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         return False
 
     def get_is_in_shopping_cart(self, obj):
-        user = self.context.get('request').user  # type: ignore
+        user = self.context['request'].user
         if user:
             return (
                 user.is_authenticated
@@ -251,8 +251,8 @@ class UserWithRecipeSerializer(UserAccountSerializer):
         ]
 
     def get_recipes(self, obj):
-        request = self.context.get('request')
-        query_params = request.query_params  # type: ignore
+        request = self.context['request']
+        query_params = request.query_params
 
         recipes = obj.recipes.all()
         recipes_limit = query_params.get("recipes_limit")

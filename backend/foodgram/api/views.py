@@ -12,6 +12,7 @@ from rest_framework import permissions, status
 
 from django_filters.rest_framework import DjangoFilterBackend
 
+from core.const import SHORT_LINK_ID_BASE
 from core.models import (
     Favorite,
     Ingredient,
@@ -229,7 +230,7 @@ class ShortRedirectView(RedirectView):
 
     def get_redirect_url(self, short_link):
         try:
-            recipe_id = int(short_link, 16)
+            recipe_id = int(short_link, SHORT_LINK_ID_BASE)
             get_object_or_404(Recipe, id=recipe_id)
             return f'/recipes/{recipe_id}'
         except (Http404, ValueError):
