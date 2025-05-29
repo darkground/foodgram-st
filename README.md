@@ -56,12 +56,6 @@ py -m venv venv
 pip install -r requirements.txt
 ```
 
-Скопируйте файл .env в папку `/backend/foodgram` (или выполните следующую команду):
-```powershell
-cd ..
-cp infra/.env backend/foodgram/.env
-```
-
 Для локального запуска рекомендуются параметры `DJANGO_IS_DEBUG=True` и `DJANGO_IS_SQLITE3=True`.
 
 Выполните миграции, импорт тестовых данных и коллекцию статики:
@@ -78,7 +72,6 @@ cp data/volume backend/foodgram/media -Recurse
 
 Запустите сервер:
 ```powershell
-cd ..
 py backend/foodgram/manage.py runserver
 ```
 
