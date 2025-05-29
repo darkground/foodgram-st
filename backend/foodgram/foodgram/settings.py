@@ -2,9 +2,17 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+DOTENV_PATHS = [
+    BASE_DIR / ".env",
+    BASE_DIR / "../../infra/.env",
+]
+
+for path in DOTENV_PATHS:
+    if path.resolve().exists():
+        load_dotenv(path)
+        break
 
 SECRET_KEY = os.getenv('DJANGO_SECRET')
 
